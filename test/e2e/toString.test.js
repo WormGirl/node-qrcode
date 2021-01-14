@@ -1,9 +1,9 @@
-const test = require('tap').test
-const fs = require('fs')
-const path = require('path')
-const QRCode = require('lib')
-const browser = require('lib/browser')
-const Helpers = require('test/helpers')
+var test = require('tap').test
+var fs = require('fs')
+var path = require('path')
+var QRCode = require('lib')
+var browser = require('lib/browser')
+var Helpers = require('test/helpers')
 
 test('toString - no promise available', function (t) {
   Helpers.removeNativePromise()
@@ -76,7 +76,7 @@ test('toString (browser)', function (t) {
 })
 
 test('toString svg', function (t) {
-  const file = path.join(__dirname, '/svgtag.expected.out')
+  var file = path.join(__dirname, '/svgtag.expected.out')
   t.plan(6)
 
   QRCode.toString('http://www.google.com', {
@@ -121,7 +121,7 @@ test('toString svg', function (t) {
 })
 
 test('toString browser svg', function (t) {
-  const file = path.join(__dirname, '/svgtag.expected.out')
+  var file = path.join(__dirname, '/svgtag.expected.out')
 
   t.plan(3)
 
@@ -146,7 +146,7 @@ test('toString browser svg', function (t) {
 })
 
 test('toString utf8', function (t) {
-  const expectedUtf8 = [
+  var expectedUtf8 = [
     '                                 ',
     '                                 ',
     '    █▀▀▀▀▀█ █ ▄█  ▀ █ █▀▀▀▀▀█    ',
@@ -212,7 +212,7 @@ test('toString utf8', function (t) {
 })
 
 test('toString terminal', function (t) {
-  const expectedTerminal = fs.readFileSync(path.join(__dirname, '/terminal.expected.out')) + ''
+  var expectedTerminal = fs.readFileSync(path.join(__dirname, '/terminal.expected.out')) + ''
 
   t.plan(3)
 

@@ -1,6 +1,6 @@
-const QRCode = require('../lib')
+var QRCode = require('../lib')
 
-const path = './tmp.png'
+var path = './tmp.png'
 QRCode.toFile(path, 'life of the party bros', {
   color: {
     dark: '#00F', // Blue modules

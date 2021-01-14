@@ -1,5 +1,5 @@
-const test = require('tap').test
-const Regex = require('core/regex')
+var test = require('tap').test
+var Regex = require('core/regex')
 
 test('Regex', function (t) {
   t.ok(Regex.NUMERIC instanceof RegExp,

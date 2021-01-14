@@ -1,8 +1,8 @@
-const test = require('tap').test
-const Mode = require('core/mode')
+var test = require('tap').test
+var Mode = require('core/mode')
 
 test('Mode bits', function (t) {
-  const EXPECTED_BITS = {
+  var EXPECTED_BITS = {
     numeric: 1,
     alphanumeric: 2,
     byte: 4,
@@ -20,14 +20,14 @@ test('Mode bits', function (t) {
 })
 
 test('Char count bits', function (t) {
-  const EXPECTED_BITS = {
+  var EXPECTED_BITS = {
     numeric: [10, 12, 14],
     alphanumeric: [9, 11, 13],
     byte: [8, 16, 16],
     kanji: [8, 10, 12]
   }
 
-  let v
+  var v
   for (v = 1; v < 10; v++) {
     t.equal(Mode.getCharCountIndicator(Mode.NUMERIC, v), EXPECTED_BITS.numeric[0])
     t.equal(Mode.getCharCountIndicator(Mode.ALPHANUMERIC, v), EXPECTED_BITS.alphanumeric[0])
@@ -59,8 +59,7 @@ test('Char count bits', function (t) {
 })
 
 test('Best mode', function (t) {
-  /* eslint-disable quote-props */
-  const EXPECTED_MODE = {
+  var EXPECTED_MODE = {
     '12345': Mode.NUMERIC,
     'abcde': Mode.BYTE,
     '1234a': Mode.BYTE,
@@ -94,14 +93,14 @@ test('Is valid', function (t) {
 })
 
 test('From value', function (t) {
-  const modes = [
+  var modes = [
     { name: 'numeric', mode: Mode.NUMERIC },
     { name: 'alphanumeric', mode: Mode.ALPHANUMERIC },
     { name: 'kanji', mode: Mode.KANJI },
     { name: 'byte', mode: Mode.BYTE }
   ]
 
-  for (let m = 0; m < modes.length; m++) {
+  for (var m = 0; m < modes.length; m++) {
     t.equal(Mode.from(modes[m].name), modes[m].mode)
     t.equal(Mode.from(modes[m].name.toUpperCase()), modes[m].mode)
     t.equal(Mode.from(modes[m].mode), modes[m].mode)

@@ -1,4 +1,4 @@
-const QRCode = require('../lib')
+var QRCode = require('../lib')
 
 QRCode.toString('yo yo yo', function (error, data) {
   if (error) {

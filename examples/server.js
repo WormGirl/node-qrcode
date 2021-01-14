@@ -1,10 +1,10 @@
-const QRCode = require('../lib')
-const http = require('http')
+var QRCode = require('../lib')
+var http = require('http')
 
 function testQRCode (req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' })
 
-  const jungleBook = "The moonlight was blocked out of the mouth of the cave, for Shere Khan's\n" +
+  var jungleBook = "The moonlight was blocked out of the mouth of the cave, for Shere Khan's\n" +
   'great square head and shoulders were thrust into the entrance. Tabaqui,\n' +
   'behind him, was squeaking: "My lord, my lord, it went in here!"\n' +
   '\n' +

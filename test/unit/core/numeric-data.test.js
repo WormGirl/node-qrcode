@@ -1,9 +1,9 @@
-const test = require('tap').test
-const BitBuffer = require('core/bit-buffer')
-const NumericData = require('core/numeric-data')
-const Mode = require('core/mode')
+var test = require('tap').test
+var BitBuffer = require('core/bit-buffer')
+var NumericData = require('core/numeric-data')
+var Mode = require('core/mode')
 
-const testData = [
+var testData = [
   {
     data: 8,
     length: 1,
@@ -39,13 +39,13 @@ const testData = [
 
 test('Numeric Data', function (t) {
   testData.forEach(function (data) {
-    const numericData = new NumericData(data.data)
+    var numericData = new NumericData(data.data)
 
     t.equal(numericData.mode, Mode.NUMERIC, 'Mode should be NUMERIC')
     t.equal(numericData.getLength(), data.length, 'Should return correct length')
     t.equal(numericData.getBitsLength(), data.bitLength, 'Should return correct bit length')
 
-    const bitBuffer = new BitBuffer()
+    var bitBuffer = new BitBuffer()
     numericData.write(bitBuffer)
     t.deepEqual(bitBuffer.buffer, data.dataBit, 'Should write correct data to buffer')
   })

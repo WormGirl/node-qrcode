@@ -1,4 +1,4 @@
-const nativePromise = global.Promise
+var nativePromise = global.Promise
 
 exports.removeNativePromise = function () {
   if (global.Promise) {

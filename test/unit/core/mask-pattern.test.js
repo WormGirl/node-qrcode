@@ -1,15 +1,16 @@
-const test = require('tap').test
-const BitMatrix = require('core/bit-matrix')
-const MaskPattern = require('core/mask-pattern')
+var test = require('tap').test
+var BitMatrix = require('core/bit-matrix')
+var MaskPattern = require('core/mask-pattern')
+var BufferUtil = require('utils/buffer')
 
 test('Mask pattern - Pattern references', function (t) {
-  const patternsCount = Object.keys(MaskPattern.Patterns).length
+  var patternsCount = Object.keys(MaskPattern.Patterns).length
   t.equals(patternsCount, 8, 'Should return 8 patterns')
 
   t.end()
 })
 
-const expectedPattern000 = [
+var expectedPattern000 = [
   1, 0, 1, 0, 1, 0,
   0, 1, 0, 1, 0, 1,
   1, 0, 1, 0, 1, 0,
@@ -18,7 +19,7 @@ const expectedPattern000 = [
   0, 1, 0, 1, 0, 1
 ]
 
-const expectedPattern001 = [
+var expectedPattern001 = [
   1, 1, 1, 1, 1, 1,
   0, 0, 0, 0, 0, 0,
   1, 1, 1, 1, 1, 1,
@@ -27,7 +28,7 @@ const expectedPattern001 = [
   0, 0, 0, 0, 0, 0
 ]
 
-const expectedPattern010 = [
+var expectedPattern010 = [
   1, 0, 0, 1, 0, 0,
   1, 0, 0, 1, 0, 0,
   1, 0, 0, 1, 0, 0,
@@ -36,7 +37,7 @@ const expectedPattern010 = [
   1, 0, 0, 1, 0, 0
 ]
 
-const expectedPattern011 = [
+var expectedPattern011 = [
   1, 0, 0, 1, 0, 0,
   0, 0, 1, 0, 0, 1,
   0, 1, 0, 0, 1, 0,
@@ -45,7 +46,7 @@ const expectedPattern011 = [
   0, 1, 0, 0, 1, 0
 ]
 
-const expectedPattern100 = [
+var expectedPattern100 = [
   1, 1, 1, 0, 0, 0,
   1, 1, 1, 0, 0, 0,
   0, 0, 0, 1, 1, 1,
@@ -54,7 +55,7 @@ const expectedPattern100 = [
   1, 1, 1, 0, 0, 0
 ]
 
-const expectedPattern101 = [
+var expectedPattern101 = [
   1, 1, 1, 1, 1, 1,
   1, 0, 0, 0, 0, 0,
   1, 0, 0, 1, 0, 0,
@@ -63,7 +64,7 @@ const expectedPattern101 = [
   1, 0, 0, 0, 0, 0
 ]
 
-const expectedPattern110 = [
+var expectedPattern110 = [
   1, 1, 1, 1, 1, 1,
   1, 1, 1, 0, 0, 0,
   1, 1, 0, 1, 1, 0,
@@ -72,7 +73,7 @@ const expectedPattern110 = [
   1, 0, 0, 0, 1, 1
 ]
 
-const expectedPattern111 = [
+var expectedPattern111 = [
   1, 0, 1, 0, 1, 0,
   0, 0, 0, 1, 1, 1,
   1, 0, 0, 0, 1, 1,
@@ -100,26 +101,26 @@ test('MaskPattern from value', function (t) {
 })
 
 test('Mask pattern - Apply mask', function (t) {
-  const patterns = Object.keys(MaskPattern.Patterns).length
-  const expectedPatterns = [
+  var patterns = Object.keys(MaskPattern.Patterns).length
+  var expectedPatterns = [
     expectedPattern000, expectedPattern001, expectedPattern010, expectedPattern011,
     expectedPattern100, expectedPattern101, expectedPattern110, expectedPattern111
   ]
 
-  for (let p = 0; p < patterns; p++) {
-    const matrix = new BitMatrix(6)
+  for (var p = 0; p < patterns; p++) {
+    var matrix = new BitMatrix(6)
     MaskPattern.applyMask(p, matrix)
-    t.deepEqual(matrix.data, new Uint8Array(expectedPatterns[p]), 'Should return correct pattern')
+    t.deepEqual(matrix.data, BufferUtil.from(expectedPatterns[p]), 'Should return correct pattern')
   }
 
-  const matrix = new BitMatrix(2)
+  matrix = new BitMatrix(2)
   matrix.set(0, 0, false, true)
   matrix.set(0, 1, false, true)
   matrix.set(1, 0, false, true)
   matrix.set(1, 1, false, true)
   MaskPattern.applyMask(0, matrix)
 
-  t.deepEqual(matrix.data, new Uint8Array([false, false, false, false]), 'Should leave reserved bit unchanged')
+  t.deepEqual(matrix.data, BufferUtil.from([false, false, false, false]), 'Should leave reserved bit unchanged')
 
   t.throws(function () { MaskPattern.applyMask(-1, new BitMatrix(1)) }, 'Should throw if pattern is invalid')
 
@@ -127,7 +128,7 @@ test('Mask pattern - Apply mask', function (t) {
 })
 
 test('Mask pattern - Penalty N1', function (t) {
-  let matrix = new BitMatrix(11)
+  var matrix = new BitMatrix(11)
   matrix.data = [
     1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
     1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
@@ -170,7 +171,7 @@ test('Mask pattern - Penalty N1', function (t) {
 })
 
 test('Mask pattern - Penalty N2', function (t) {
-  let matrix = new BitMatrix(8)
+  var matrix = new BitMatrix(8)
   matrix.data = [
     1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 0, 0, 0, 1, 1,
@@ -205,7 +206,7 @@ test('Mask pattern - Penalty N2', function (t) {
 })
 
 test('Mask pattern - Penalty N3', function (t) {
-  const matrix = new BitMatrix(11)
+  var matrix = new BitMatrix(11)
   matrix.data = [
     0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1,
     0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1,
@@ -244,19 +245,19 @@ test('Mask pattern - Penalty N3', function (t) {
 })
 
 test('Mask pattern - Penalty N4', function (t) {
-  const matrix = new BitMatrix(10)
+  var matrix = new BitMatrix(10)
   matrix.data = new Array(50).fill(1).concat(new Array(50).fill(0))
 
   t.equals(MaskPattern.getPenaltyN4(matrix), 0,
     'Should return correct penalty points')
 
-  const matrix2 = new BitMatrix(21)
+  var matrix2 = new BitMatrix(21)
   matrix2.data = new Array(190).fill(1).concat(new Array(251).fill(0))
 
   t.equals(MaskPattern.getPenaltyN4(matrix2), 10,
     'Should return correct penalty points')
 
-  const matrix3 = new BitMatrix(10)
+  var matrix3 = new BitMatrix(10)
   matrix3.data = new Array(22).fill(1).concat(new Array(78).fill(0))
 
   t.equals(MaskPattern.getPenaltyN4(matrix3), 50,
@@ -266,7 +267,7 @@ test('Mask pattern - Penalty N4', function (t) {
 })
 
 test('Mask pattern - Best mask', function (t) {
-  const matrix = new BitMatrix(11)
+  var matrix = new BitMatrix(11)
   matrix.data = [
     0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1,
     0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1,
@@ -281,7 +282,7 @@ test('Mask pattern - Best mask', function (t) {
     1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0
   ]
 
-  const mask = MaskPattern.getBestMask(matrix, function () {})
+  var mask = MaskPattern.getBestMask(matrix, function () {})
   t.ok(!isNaN(mask), 'Should return a number')
 
   t.ok(mask >= 0 && mask < 8,

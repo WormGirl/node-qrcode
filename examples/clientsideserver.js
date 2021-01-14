@@ -1,17 +1,18 @@
-const express = require('express')
-const app = express()// .createServer()
-const http = require('http')
-const fs = require('fs')
-const QRCode = require('../lib')
-const canvasutil = require('canvasutil')
-const { createCanvas, loadImage } = require('canvas')
+var express = require('express')
+var app = express()// .createServer()
+var http = require('http')
+var fs = require('fs')
+var QRCode = require('../lib')
+var canvasutil = require('canvasutil')
+var Canvas = require('canvas')
+var Image = Canvas.Image
 
-const path = require('path')
+var path = require('path')
 
-// app.use(express.methodOverride())
-// app.use(express.bodyParser())
-// app.use(app.router)
-// app.use(express.static(path.resolve(__dirname, '..')))
+  // app.use(express.methodOverride())
+  // app.use(express.bodyParser())
+//  app.use(app.router)
+  // app.use(express.static(path.resolve(__dirname, '..')))
 
 app.get('/qrcode.js', (req, res) => {
   res.set('content-type', 'text/javascript')
@@ -29,12 +30,12 @@ app.get('/', function (req, res) {
   })
 })
 
-const effectHandlers = {}
+var effectHandlers = {}
 
 app.get('/generate', function (req, res) {
-  const q = req.query || {}
+  var q = req.query || {}
 
-  let effect = q.effect || 'plain'
+  var effect = q.effect || 'plain'
   if (!effectHandlers[effect]) {
     effect = 'plain'
   }
@@ -48,7 +49,7 @@ app.get('/generate', function (req, res) {
         }
       })
     } else {
-      const msg = error.message + '\n' + error.stack
+      var msg = error.message + '\n' + error.stack
       res.header('Content-Type', 'text/plain')
       res.send(msg)
       console.error(msg)
@@ -72,28 +73,28 @@ effectHandlers.bacon = function (args, cb) {
 }
 
 effectHandlers.rounded = function (args, cb) {
-  const canvas = createCanvas(200, 200)
+  var canvas = new Canvas(200, 200)
   QRCode.toCanvas(canvas, args.text || '', function (err) {
     if (err) {
       cb(err, canvas)
       return
     }
 
-    const tpx = new canvasutil.PixelCore()
-    const luma709Only = canvasutil.conversionLib.luma709Only
-    const up = []
-    const down = []
-    const left = []
-    const right = []
-    let upPx
-    let downPx
-    let leftPx
-    let rightPx
-    let r
-    let t
-    let l
-    let d
-    let corner = 0
+    var tpx = new canvasutil.PixelCore()
+    var luma709Only = canvasutil.conversionLib.luma709Only
+    var up = []
+    var down = []
+    var left = []
+    var right = []
+    var upPx
+    var downPx
+    var leftPx
+    var rightPx
+    var r
+    var t
+    var l
+    var d
+    var corner = 0
 
     tpx.threshold = 100
 
@@ -161,21 +162,21 @@ effectHandlers.rounded = function (args, cb) {
         }
       }
     })
-    cb(null, canvas)
+    cb(false, canvas)
   })
 }
 
 effectHandlers.remoteImage = function (args, cb) {
-  let src = args.src
-  let domain
-  let uri
+  var src = args.src
+  var domain
+  var uri
 
   if (!src) {
     cb(new Error('src required'), null)
   } else {
     if (src.indexof('://') !== -1) {
       src = src.split('://').unshift()
-      const parts = src.split('/')
+      var parts = src.split('/')
 
       domain = parts.shift()
       uri = parts.join('/')
@@ -187,14 +188,14 @@ effectHandlers.remoteImage = function (args, cb) {
     return
   }
 
-  const options = {
+  var options = {
     host: domain,
     port: 80,
     path: uri,
     method: 'GET'
   }
 
-  const req = http.request(options, function (res) {
+  var req = http.request(options, function (res) {
     if (res.statusCode < 200 || res.statusCode > 299) {
       cb(new Error('http ' + res.statusCode + ' response code'), null)
       return
@@ -202,14 +203,14 @@ effectHandlers.remoteImage = function (args, cb) {
 
     res.setEncoding('utf8')
 
-    let data = ''
+    var data = ''
     res.on('data', function (chunk) {
       data += chunk
       console.log('BODY: ' + chunk)
     })
 
     res.on('complete', function () {
-      cb(null, data)
+      cb(false, data)
     })
 
     res.on('error', function (error) {
@@ -222,28 +223,31 @@ effectHandlers.remoteImage = function (args, cb) {
 }
 
 effectHandlers.image = function (args, cb) {
-  loadImage(args.src || '').then((img) => {
-    const convert = canvasutil.conversionLib
-    const canvas = createCanvas(200, 200)
+  var src = args.src || ''
+
+  var img = new Image()
+  var convert = canvasutil.conversionLib
+  img.onload = function () {
+    var canvas = new Canvas(200, 200)
     QRCode.toCanvas(canvas, args.text || '', function (err) {
       if (err) {
         cb(err, false)
         return
       }
 
-      const codeCtx = canvas.getContext('2d')
-      const frame = codeCtx.getImageData(0, 0, canvas.width, canvas.width)
-      const tpx = new canvasutil.PixelCore()
-      const baconCanvas = createCanvas(canvas.width, canvas.width)
-      const ctx = baconCanvas.getContext('2d')
-      const topThreshold = args.darkThreshold || 25
-      const bottomThreshold = args.lightThreshold || 75
+      var codeCtx = canvas.getContext('2d')
+      var frame = codeCtx.getImageData(0, 0, canvas.width, canvas.width)
+      var tpx = new canvasutil.PixelCore()
+      var baconCanvas = new Canvas(canvas.width, canvas.width)
+      var ctx = baconCanvas.getContext('2d')
+      var topThreshold = args.darkThreshold || 25
+      var bottomThreshold = args.lightThreshold || 75
 
       tpx.threshold = 50
 
       // scale image
-      let w = canvas.width
-      let h = canvas.height
+      var w = canvas.width
+      var h = canvas.height
 
       if (img.width > img.height) {
         w = w * (canvas.height / h)
@@ -256,10 +260,10 @@ effectHandlers.image = function (args, cb) {
 
       try {
         tpx.iterate(baconCanvas, function (px, i, l, pixels, w, h, pixelCore) {
-          const luma = (0.2125 * px.r + 0.7154 * px.g + 0.0721 * px.b)
-          const codeLuma = convert.luma709Only(frame.data[i * 4], frame.data[i * 4 + 1], frame.data[i * 4 + 2])
-          let yuv
-          let rgb
+          var luma = (0.2125 * px.r + 0.7154 * px.g + 0.0721 * px.b)
+          var codeLuma = convert.luma709Only(frame.data[i * 4], frame.data[i * 4 + 1], frame.data[i * 4 + 2])
+          var yuv
+          var rgb
 
           if (codeLuma > pixelCore.threshold) {
             if (luma < bottomThreshold) {
@@ -288,16 +292,21 @@ effectHandlers.image = function (args, cb) {
         cb(err, false)
       }
 
-      cb(null, baconCanvas)
+      cb(false, baconCanvas)
     })
-  }, (error) => {
+  }
+
+  img.onerror = function (error) {
+    error.message += ' (' + src + ')'
     cb(error, null)
-  })
+  }
+
+  img.src = src
 }
 
 effectHandlers.plain = function (args, cb) {
-  const canvas = createCanvas(200, 200)
-  const text = args.text || ''
+  var canvas = new Canvas(200, 200)
+  var text = args.text || ''
   QRCode.toCanvas(canvas, text || '', function (err) {
     cb(err, canvas)
   })
